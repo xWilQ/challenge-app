@@ -1,95 +1,104 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebaseConfig';
+import styles from './page.module.css';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import ChallengeCard from './Components/ChallengeCard';
 
 export default function Home() {
+  const [name, setName] = useState('');
+  const [showChallenges, setShowChallenges] = useState(false);
+  const [challenges, setChallenges] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (showChallenges) {
+      fetchChallenges();
+    }
+  }, [showChallenges]);
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    setShowChallenges(true);
+  };
+
+  const fetchChallenges = async () => {
+    setLoading(true);
+    try {
+      const challengesCollection = collection(db, 'challenges');
+      const challengesSnapshot = await getDocs(challengesCollection);
+      const allChallenges = challengesSnapshot.docs.map(doc => doc.data());
+
+      // Shuffle the challenges array and select 10
+      const shuffledChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 10);
+      setChallenges(shuffledChallenges);
+    } catch (error) {
+      console.error('Error fetching challenges:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSkip = async (challenge) => {
+    const newChallenges = challenges.filter(c => c !== challenge);
+    const remainingChallenges = (await getDocs(collection(db, 'challenges'))).docs.map(doc => doc.data()).filter(c => !newChallenges.includes(c));
+    const newChallenge = remainingChallenges.sort(() => Math.random() - 0.5)[0];
+    newChallenges.push(newChallenge);
+
+    await addDoc(collection(db, 'skips'), {
+      user: name,
+      skippedChallenge: challenge,
+      timestamp: new Date(),
+    });
+
+    setChallenges(newChallenges);
+  };
+
+  const handleSubmit = async (challenge, comment) => {
+    await addDoc(collection(db, 'completions'), {
+      user: name,
+      completedChallenge: challenge,
+      comment: comment,
+      timestamp: new Date(),
+    });
+
+    setChallenges(prevChallenges => prevChallenges.filter(c => c !== challenge));
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className={styles.container}>
+      {!showChallenges ? (
+        <form onSubmit={handleNameSubmit} className={styles.form}>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
+            required
+            className={styles.input}
+          />
+          <button type="submit" className={styles.button} disabled={loading}>
+            {loading ? 'Loading...' : 'Start'}
+          </button>
+        </form>
+      ) : (
+        <div className={styles.cardsContainer}>
+          {loading ? (
+            <p className={styles.loading}>Loading challenges...</p>
+          ) : challenges.length > 0 ? (
+            challenges.map((challenge, index) => (
+              <ChallengeCard
+                key={index}
+                challenge={challenge}
+                onSkip={handleSkip}
+                onSubmit={handleSubmit}
+              />
+            ))
+          ) : (
+            <p className={styles.noChallenges}>No challenges available.</p>
+          )}
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      )}
+    </div>
   );
 }
