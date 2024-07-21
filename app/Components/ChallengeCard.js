@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ChallengeCard.module.css';
+import { storage } from '../../firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [completed, setCompleted] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  //const [completed, setCompleted] = useState(false);
   const [comment, setComment] = useState('');
   const [timer, setTimer] = useState(null);
 
@@ -50,13 +53,25 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
   const handleCommentChange = (event) => {
     setComment(event.target.value);
   };
+  
+  const handlePhotoChange = (event) => {
+    setPhoto(event.target.files[0]);
+  };
 
-  const handleSubmitComment = () => {
-    onSubmit(challenge, comment);
+  const handleSubmitComment = async () => {
+    let photoURL = '';
+
+    if (photo) {
+      const photoRef = ref(storage, `photos/${photo.name}`);
+      const snapshot = await uploadBytes(photoRef, photo);
+      photoURL = await getDownloadURL(snapshot.ref);
+    }
+
+    onSubmit(challenge, comment, photoURL);
     setIsSubmitting(false);
     setIsLongPressed(false);
-    setCompleted(true);
     setComment('');
+    setPhoto(null);
   };
 
   const getCardStyle = () => {
@@ -100,6 +115,12 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
             value={comment}
             onChange={handleCommentChange}
             placeholder="Kirjoita kommentti..."
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            className={styles.photoInput}
           />
           <div className={styles.commentActions}>
             <button onClick={handleCancel} className={styles.backButton}>Takaisin</button>

@@ -95,7 +95,7 @@ export default function Home() {
   };
     
   
-  const handleSubmit = async (challenge, comment) => {
+  const handleSubmit = async (challenge, comment, photoURL) => {
 
     try {
     
@@ -110,7 +110,7 @@ export default function Home() {
       await updateDoc(userDocRef, {
         challenges: userData.challenges.map(c =>
         c.id === challenge.id
-          ? { ...c, status: 'completed', completedAt: new Date(), comment: comment } // Mark challenge as completed
+          ? { ...c, status: 'completed', completedAt: new Date(), comment: comment, photoURL } // Mark challenge as completed
           : c
       ),
         ammountCompleted: ammountCompleted +1, // Increment the completed challenges counter
@@ -141,7 +141,7 @@ export default function Home() {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.toLowerCase())}
               placeholder="Syötä nimesi"
               required
               className={styles.input}
@@ -153,7 +153,7 @@ export default function Home() {
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          <h1 className={styles.logo}>Tervetuloa {name}!</h1>
+          <h1 className={styles.logo}>Tervetuloa {name.charAt(0).toUpperCase() + name.slice(1)}!</h1>
             <div className={styles.stats}>
               <p> {ammountCompleted} haastetta suoritettu</p>
               <p> {ammountSkipped} haastetta skipattu</p>
