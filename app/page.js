@@ -21,6 +21,12 @@ export default function Home() {
 
   const handleNameSubmit = async (e) => {
     e.preventDefault();
+    
+    //Check if the name is empty
+    if (name.trim() === '') {
+      return;
+    }
+    
     setLoading(true);
 
     // Check if the user exists

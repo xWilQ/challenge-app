@@ -12,10 +12,12 @@
 
   .completedCard {
     background-color: #13eb1e;
+    pointer-events: none;
   }
 
   .skippedCard {
     background-color: #f44336;
+    pointer-events: none;
   }
 
   .cardTitle {
