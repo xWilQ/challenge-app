@@ -14,51 +14,66 @@ export default function Home() {
   const [ammountCompleted, setAmmountCompleted] = useState(0);
 
   useEffect(() => {
+    // Retrieve the name from local storage when the component mounts
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      setName(storedName);
+      setShowChallenges(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (showChallenges) {
-      generateChallenges();
+      fetchChallenges();
     }
   }, [showChallenges]);
 
-  const handleNameSubmit = async (e) => {
+  const handleNameSubmit = (e) => {
+    
     e.preventDefault();
     
-    //Check if the name is empty
     if (name.trim() === '') {
       return;
     }
     
-    setLoading(true);
-
-    // Check if the user exists
-    const userDocRef = doc(db, 'users', name);
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
-      // User exists, fetch their challenges
-      const userData = userDoc.data();
-      setChallenges(userData.challenges);
-      setAmmountSkipped(userData.ammountSkipped || 0);
-      setAmmountCompleted(userData.ammountCompleted || 0);
-    } else {
-      // User doesn't exist, generate and save new challenges
-      const newChallenges = await generateChallenges();
-      await setDoc(userDocRef, { challenges: newChallenges, ammountSkipped: 0, ammountCompleted: 0 });
-      setChallenges(newChallenges);
-    }
-
-    setLoading(false);
+    // Store the name in local storage
+    localStorage.setItem('userName', name);
     setShowChallenges(true);
   };
 
-  const generateChallenges = async () => {
-    const challengesCollection = collection(db, 'challenges');
-    const challengesSnapshot = await getDocs(challengesCollection);
-    const allChallenges = challengesSnapshot.docs.map(doc => ({
-      ...doc.data(),
-      status: 'normal', // Default status
-    }));
-    const shuffledChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 10);
-    return shuffledChallenges;
+  const fetchChallenges = async () => {
+    setLoading(true);
+    try {
+      const userDocRef = doc(db, 'users', name);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.exists() ? userDoc.data() : { challenges: [], ammountCompleted: 0, ammountSkipped: 0 };
+
+      // Set state for skipped and completed challenges
+      setAmmountSkipped(userData.ammountSkipped || 0);
+      setAmmountCompleted(userData.ammountCompleted || 0);
+
+      // If the user has challenges saved, use them; otherwise, fetch new challenges
+      if (userData.challenges.length > 0) {
+        setChallenges(userData.challenges);
+      } else {
+        const challengesCollection = collection(db, 'challenges');
+        const challengesSnapshot = await getDocs(challengesCollection);
+        const allChallenges = challengesSnapshot.docs.map(doc => doc.data());
+
+        // Shuffle the challenges array and select 10
+        const shuffledChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 10);
+        setChallenges(shuffledChallenges);
+        // Save the initial challenges to the user's document
+        await setDoc(userDocRef, {
+          ...userData,
+          challenges: shuffledChallenges,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching challenges:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSkip = async (challenge) => {
