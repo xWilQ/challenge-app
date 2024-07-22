@@ -3,14 +3,15 @@ import styles from './ChallengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
+const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photo, setPhoto] = useState(null);
-  //const [completed, setCompleted] = useState(false);
   const [comment, setComment] = useState('');
   const [timer, setTimer] = useState(null);
+
+  //const borderStyles = ['4px solid orange', '4px solid yellow', '4px solid blue'];
 
   useEffect(() => {
     return () => clearTimeout(timer); // Clean up the timer on component unmount
@@ -77,12 +78,18 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
   const getCardStyle = () => {
     if (challenge.status === 'completed') return styles.completedCard;
     if (challenge.status === 'skipped') return styles.skippedCard;
-    return styles.card;
+    return {};
   };
+
+  //const randomBorderStyle = borderStyles[Math.floor(Math.random() * borderStyles.length)];
+  const cardStyle = getCardStyle();
+  //const cardBackgroundStyle = challenge.status ? {} : { backgroundColor, border: randomBorderStyle };
+  const cardBackgroundStyle = challenge.status ? {} : { backgroundColor};
 
   return (
     <div
-    className={`${styles.card} ${getCardStyle()}`}
+    className={`${styles.card} ${cardStyle}`}
+      style={cardBackgroundStyle}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseDown={handleTouchStart}
@@ -90,7 +97,12 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit }) => {
       onMouseLeave={handleTouchEnd}
     >
       <h2 className={styles.cardTitle}>{challenge.name}</h2>
-      {!isLongPressed && !isSubmitting && <p className={styles.cardDescription}>{challenge.description}</p>}
+      <p className={styles.cardDescription}>{challenge.description}</p>
+      {!isLongPressed && !isSubmitting && !challenge.status &&
+      <>
+       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>🎯</button>
+      </>
+      }
       {isLongPressed && !isSubmitting && (
         <div className={styles.actions}>
           {confirmSkip ? (

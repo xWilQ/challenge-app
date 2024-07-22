@@ -1,6 +1,6 @@
   .card {
-    background-color:  #9e9e9e;
-    border: 1px solid #ddd;
+    background-color:  #118AB2;
+    border: 4px solid #ffffff;
     border-radius: 8px;
     padding: 20px;
     margin: 10px;
@@ -11,12 +11,12 @@
   }
 
   .completedCard {
-    background-color: #13eb1e;
+    background-color: #06D6A0;
     pointer-events: none;
   }
 
   .skippedCard {
-    background-color: #f44336;
+    background-color: #EF476F;
     pointer-events: none;
   }
 
@@ -24,6 +24,7 @@
     text-align: center;
     font-size: 18px;
     margin-bottom: 10px;
+    color: #fff;
   }
   
   .cardDescription {
@@ -35,6 +36,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 20px;
   }
   
   .confirmation {
@@ -70,7 +72,7 @@
   }
   
   .skipButton {
-    background-color: #f44336;
+    background-color: #EF476F;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -79,7 +81,7 @@
   }
   
   .submitButton {
-    background-color: #13eb1e;;
+    background-color: #06D6A0;;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -94,4 +96,14 @@
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  .chooseButton{
+    background-color: #073B4C;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;  
   }

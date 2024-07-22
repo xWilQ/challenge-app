@@ -7,22 +7,33 @@
   transform: translate(-50%, -50%);
   text-align: center;
   margin: auto;
-  max-width: 400px;
+  width: 70%;
 }
 
 .container {
   text-align: center;
+  background-color: #073B4C;
+  background-image: url('./images/kalajoki23dark.jpg');
+  height: 300px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.input {
-  width: 80%;
+.name {
+  width: 100%;
   padding: 10px;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
-.stats {
+.description {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
   font-size: 16px;
+  margin-bottom: 20px;
+  resize: none;
 }
 
 .button {
@@ -32,18 +43,13 @@
 .logo {
  text-align: center;
  font-size: 24px;
- margin-bottom: 20px;
+ /*margin-bottom: 50px;*/
+ margin-top: 50px;
 }
 
-.cardsContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  user-select:none;
-}
-
-.loading, .noChallenges {
+.rules{
   font-size: 16px;
-  margin-top: 20px;
+  margin-top: 100px;
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
