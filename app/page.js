@@ -29,20 +29,22 @@ export default function Omahaaste() {
     return (
         <div className={styles.container}>
             
-            <h1 className={styles.logo}>Luo oma haaste VillaKämppä viikonlopulle!</h1>
-            
+            <div className={styles.logo}>
+                <h1>Luo oma haaste VillaKämppä viikonlopulle!</h1>
+            </div>
+
             {!submitted ? (
             <div className={styles.form}>
                 <form onSubmit={handleFormSubmit}>
-                    
+
                     <div className={styles.rules}>
                         <p>1. Haasteen tulee olla hauska ja turvallinen!</p>
                         <p>2. Ei aiheuteta kenellekkään pahaa mieltä!</p>
                         <p>3. Muista että tämä haaste voi sattua juuri sinulle, mieti läpi mitä olet itse valmis tekemään.</p>
                         <br></br>
-                        <p>Esimerkki haaste:</p> 
-                        <p>Nimi: Yhteislaulu!</p>
-                        <p>Selitys: Aloita laulu ja saa ainakin kaksi muuta pelaajaa mukaan laulamaan</p>
+                        <p><strong>Esimerkki haaste:</strong></p> 
+                        <p><strong>Nimi:</strong> Yhteislaulu!</p>
+                        <p><strong>Selitys:</strong> Aloita laulu ja saa ainakin kaksi muuta pelaajaa mukaan laulamaan</p>
                     </div>
                     
                     <input className={styles.name}

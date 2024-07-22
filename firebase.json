@@ -5,6 +5,12 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    
+    "redirects": [ {
+    "source": "/peli",
+    "destination": "/peli",
+    "type": 301
+  } ]
   }
 }

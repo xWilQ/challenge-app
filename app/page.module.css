@@ -1,23 +1,34 @@
-.form {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+.container {
+  background-color: #000000;
+  background-image: url('./images/kalajoki2023.jpg');
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: contain;
   text-align: center;
-  margin: auto;
-  width: 70%;
 }
 
-.container {
+.logo {
   text-align: center;
-  background-color: #073B4C;
-  background-image: url('./images/kalajoki23dark.jpg');
-  height: 300px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+ }
+
+.form {
+  padding-top: 100px;
+  padding-left: 10%;
+  padding-right: 10%;
+  text-align: center;
+}
+
+.rules{
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
 .name {
@@ -38,18 +49,5 @@
 
 .button {
   padding: 10px 20px;
-}
-
-.logo {
- text-align: center;
- font-size: 24px;
- /*margin-bottom: 50px;*/
- margin-top: 50px;
-}
-
-.rules{
-  font-size: 16px;
-  margin-top: 100px;
   margin-bottom: 20px;
-  line-height: 1.5;
 }

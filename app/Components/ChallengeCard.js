@@ -100,7 +100,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
       <p className={styles.cardDescription}>{challenge.description}</p>
       {!isLongPressed && !isSubmitting && !challenge.status &&
       <>
-       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>🎯</button>
+       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>Avaa🎯</button>
       </>
       }
       {isLongPressed && !isSubmitting && (
