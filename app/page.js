@@ -30,7 +30,7 @@ export default function Omahaaste() {
         <div className={styles.container}>
             
             <div className={styles.logo}>
-                <h1>Luo oma haaste VillaKämppä viikonlopulle!</h1>
+                <h1>Luo oma haaste <br></br> Villa Kämppä <br></br> viikonlopulle!</h1>
             </div>
 
             {!submitted ? (

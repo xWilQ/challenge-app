@@ -37,6 +37,8 @@ export default function Home() {
     if (name.trim() === '') {
       return;
     }
+
+    setName(name.trim().toLowerCase());
     
     // Store the name in local storage
     localStorage.setItem('userName', name);
@@ -164,7 +166,7 @@ export default function Home() {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value.toLowerCase())}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Syötä nimesi"
               required
               className={styles.input}
