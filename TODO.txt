@@ -1,3 +1,8 @@
-- Pelajiille vain 5 haastetta näkyviin kerrallaan!
-- Lisää että max 3 - 5 skippiä!
+TODO:
+- Make it "endless", users should get a new challenge on skip and on a completed challenge?
+- Decide if players should be rewarded with additional skips after completing a number of challenges.
+- Fix colors.
+
+- FIXING UNIQUENESS THING BY HAVING MULTIPLES OF SAME QUESTION IN THE DATABASE
+ + AutoID by firebase, same name on challenge so check that before adding to player.
 

@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebaseConfig';
 import styles from './page.module.css';
-import { collection, doc , getDocs, addDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import ChallengeCard from '../Components/ChallengeCard';
+import { collection, doc , getDocs, addDoc, getDoc, setDoc, updateDoc, runTransaction } from 'firebase/firestore';
+import ChallengeCard from '../components/challengeCard';
+import { fetchChallenges } from '../utils/utils';
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -17,7 +18,7 @@ export default function Home() {
 
   useEffect(() => {
     // Retrieve the name from local storage when the component mounts
-    const storedName = localStorage.getItem('userName');
+    const storedName = localStorage.getItem('userName')
     if (storedName) {
       setName(storedName);
       setShowChallenges(true);
@@ -26,7 +27,7 @@ export default function Home() {
 
   useEffect(() => {
     if (showChallenges) {
-      fetchChallenges();
+      setChallenges(fetchChallenges(name));
     }
   }, [showChallenges]);
 
@@ -38,16 +39,25 @@ export default function Home() {
       return;
     }
 
-    setName(name.trim().toLowerCase());
+    // Set the name in lowercase and remove whitespace
+    const processedName = name.replace(/\s/g, "").trim().toLowerCase();
     
+    setName(processedName);
+
     // Store the name in local storage
-    localStorage.setItem('userName', name);
+    localStorage.setItem('userName', processedName);
+
     setShowChallenges(true);
   };
 
-  const fetchChallenges = async () => {
+  /*const fetchChallenges = async () => {
     setLoading(true);
     try {
+      // Ensure name is valid
+      if (!name || name.trim() === '') {
+        throw new Error('Invalid user name');
+      }
+
       const userDocRef = doc(db, 'users', name);
       const userDoc = await getDoc(userDocRef);
       const userData = userDoc.exists() ? userDoc.data() : { challenges: [], ammountCompleted: 0, ammountSkipped: 0 };
@@ -59,13 +69,14 @@ export default function Home() {
       // If the user has challenges saved, use them; otherwise, fetch new challenges
       if (userData.challenges.length > 0) {
         setChallenges(userData.challenges);
-      } else {
+      } 
+      else {
         const challengesCollection = collection(db, 'challenges');
         const challengesSnapshot = await getDocs(challengesCollection);
         const allChallenges = challengesSnapshot.docs.map(doc => doc.data());
 
         // Shuffle the challenges array and select 10
-        const shuffledChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 10);
+        const shuffledChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 5);
         setChallenges(shuffledChallenges);
         // Save the initial challenges to the user's document
         await setDoc(userDocRef, {
@@ -78,7 +89,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  };*/
+
+  const initialAllowedSkips = 3;
+  const additionalAllowedSkips = Math.floor(ammountCompleted / 3);
+  const totalAllowedSkips = initialAllowedSkips;
 
   const handleSkip = async (challenge) => {
     try {
@@ -99,6 +114,8 @@ export default function Home() {
         .map(doc => ({ ...doc.data(), id: doc.id }))
         .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
         .sort(() => Math.random() - 0.5)[0];
+      
+      console.log("newChallenge", newChallenge);
   
       // Add the new challenge to the user's list
       updatedChallenges.push(newChallenge);
@@ -118,8 +135,7 @@ export default function Home() {
       console.error('Error handling challenge skip:', error);
     }
   };
-    
-  
+
   const handleSubmit = async (challenge, comment, photoURL) => {
 
     try {
@@ -193,6 +209,8 @@ export default function Home() {
                 onSkip={handleSkip}
                 onSubmit={handleSubmit}
                 backgroundColor={cardColors[index % cardColors.length]}
+                ammountSkipped={ammountSkipped}
+                allowedSkips={totalAllowedSkips}
               />
             ))
           ) : (

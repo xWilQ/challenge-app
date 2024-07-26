@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import styles from './ChallengeCard.module.css';
+import styles from './challengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
+const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, allowedSkips}) => {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [comment, setComment] = useState('');
   const [timer, setTimer] = useState(null);
+  const [localAmmountSkipped, setLocalAmmountSkipped] = useState(0);
+  const [localAllowedSkips, setAllowedSkips] = useState(0);
 
   //const borderStyles = ['4px solid orange', '4px solid yellow', '4px solid blue'];
+
+  useEffect(() => {
+    setLocalAmmountSkipped(ammountSkipped);
+  }, [ammountSkipped]);
+
+  useEffect(() => {
+    setAllowedSkips(allowedSkips);
+  }, [allowedSkips]);
 
   useEffect(() => {
     return () => clearTimeout(timer); // Clean up the timer on component unmount
@@ -19,7 +29,8 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
 
   const handleTouchStart = () => {
     const newTimer = setTimeout(() => {
-      setIsLongPressed(true);}
+      setIsLongPressed(true);
+    }
       , 500); // Adjust the duration of the long press as needed (500ms in this case)
     setTimer(newTimer);
   };
@@ -86,6 +97,13 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
   //const cardBackgroundStyle = challenge.status ? {} : { backgroundColor, border: randomBorderStyle };
   const cardBackgroundStyle = challenge.status ? {} : { backgroundColor};
 
+  const smallProps = {
+    force: 0.4,
+    duration: 2200,
+    particleCount: 30,
+    width: 400,
+  };
+
   return (
     <div
     className={`${styles.card} ${cardStyle}`}
@@ -107,9 +125,19 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor }) => {
         <div className={styles.actions}>
           {confirmSkip ? (
             <div className={styles.confirmation}>
-              <p>Oletko varma että haluat skipata tämän haasteen?</p>
-              <button onClick={confirmSkipAction} className={styles.skipButton}>Kyllä</button>
-              <button onClick={() => setConfirmSkip(false)} className={styles.backButton}>Takaisin</button>
+              {localAmmountSkipped > localAllowedSkips - 1 ? (
+                <>
+                <p>Olet käyttänyt kaikki skippisi, suorita haasteita ansaitaksesi uuden skipin</p>
+                <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
+                </>
+              ):(
+                <>
+                <p>Oletko varma että haluat skipata tämän haasteen?</p>
+                <p>Sinulla on {localAllowedSkips - ammountSkipped} skippiä jäljellä</p>
+                <button onClick={confirmSkipAction} className={styles.skipButton}>Kyllä</button>
+                <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
+                </>
+              )}
             </div>
           ) : (
             <div className={styles.buttonGroup}>

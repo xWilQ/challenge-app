@@ -13,8 +13,6 @@ export default function Omahaaste() {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        //TODO: add id numbering to the challenges
-
         const docRef = await addDoc(collection(db, "haasteet"), {
             name: challengeName,
             description: challengeDescription,
@@ -29,15 +27,16 @@ export default function Omahaaste() {
     return (
         <div className={styles.container}>
             
-            <div className={styles.logo}>
+            {/*<div className={styles.logo}>
                 <h1>Luo oma haaste <br></br> Villa Kämppä <br></br> viikonlopulle!</h1>
-            </div>
+            </div> */}
 
             {!submitted ? (
             <div className={styles.form}>
                 <form onSubmit={handleFormSubmit}>
 
                     <div className={styles.rules}>
+                        <h2>Luo oma haaste, haasteet tulevat olemaan osana viikonlopun ohjelmaa!</h2>
                         <p>1. Haasteen tulee olla hauska ja turvallinen!</p>
                         <p>2. Ei aiheuteta kenellekkään pahaa mieltä!</p>
                         <p>3. Muista että tämä haaste voi sattua juuri sinulle, mieti läpi mitä olet itse valmis tekemään.</p>

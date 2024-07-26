@@ -9,7 +9,7 @@
     
     "redirects": [ {
     "source": "/peli",
-    "destination": "/peli.html",
+    "destination": "/peli",
     "type": 301
   } ]
   }
