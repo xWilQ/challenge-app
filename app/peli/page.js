@@ -13,7 +13,10 @@ export default function Home() {
   const [ammountSkipped, setAmmountSkipped] = useState(0);
   const [ammountCompleted, setAmmountCompleted] = useState(0);
 
-  const cardColors = ['#FFADAD', '#FFD6A5', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF'];
+  //const cardColors = ['#9b5de5', '#f15bb5', '#0d3b66'];
+  const cardColors = ['#218380', '#8f2d56', '#ffbc42'];
+  //const cardColors = ['#808080'];
+  
 
   useEffect(() => {
     // Retrieve the name from local storage when the component mounts
@@ -168,6 +171,7 @@ export default function Home() {
   });
 
   return (
+    
     <div className={styles.container}>
       {!showChallenges ? (
         <div className={styles.form}>

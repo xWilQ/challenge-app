@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './challengeCard.module.css';
 import { storage } from '../../firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes } from 'firebase/storage';
 
-const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, username}) => {
-  const [isLongPressed, setIsLongPressed] = useState(false);
+const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, username, cardOpen}) => {
+  const [isOpen, setOpen] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [comment, setComment] = useState('');
-  const [timer, setTimer] = useState(null);
   const [localAmmountSkipped, setLocalAmmountSkipped] = useState(0);
   const allowedSkips = 3;
 
@@ -19,29 +18,11 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
     setLocalAmmountSkipped(ammountSkipped);
   }, [ammountSkipped]);
 
-  useEffect(() => {
-    return () => clearTimeout(timer); // Clean up the timer on component unmount
-  }, [timer]);
-
-  const handleTouchStart = () => {
-    const newTimer = setTimeout(() => {
-      setIsLongPressed(true);
-    }
-      , 500); // Adjust the duration of the long press as needed (500ms in this case)
-    setTimer(newTimer);
-  };
-
-  const handleTouchEnd = () => {
-    clearTimeout(timer);
-    setTimer(null);
-  };
-
   const handleCancel = () => {
-    setIsLongPressed(false);
+    setOpen(false);
     setConfirmSkip(false);
     setIsSubmitting(false);
     setComment('');
-    clearTimeout(timer);
   };
 
   const handleSkip = () => {
@@ -49,7 +30,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   };
 
   const confirmSkipAction = () => {
-    setIsLongPressed(false);
+    setOpen(false);
     setConfirmSkip(false);
     onSkip(challenge);
   };
@@ -79,7 +60,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
 
     onSubmit(challenge, comment, photoStatus);
     setIsSubmitting(false);
-    setIsLongPressed(false);
+    setOpen(false);
     setComment('');
     setPhoto(null);
   };
@@ -95,45 +76,33 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   //const cardBackgroundStyle = challenge.status ? {} : { backgroundColor, border: randomBorderStyle };
   const cardBackgroundStyle = challenge.status ? {} : { backgroundColor};
 
-  const smallProps = {
-    force: 0.4,
-    duration: 2200,
-    particleCount: 30,
-    width: 400,
-  };
-
   return (
     <div
     className={`${styles.card} ${cardStyle}`}
       style={cardBackgroundStyle}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onMouseDown={handleTouchStart}
-      onMouseUp={handleTouchEnd}
-      onMouseLeave={handleTouchEnd}
     >
       <h2 className={styles.cardTitle}>{challenge.name}</h2>
       <p className={styles.cardDescription}>{challenge.description}</p>
-      {!isLongPressed && !isSubmitting && !challenge.status &&
+      {!isOpen && !isSubmitting && !challenge.status &&
       <>
-       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>Avaa</button>
+       <button className={styles.chooseButton} onClick={() => setOpen(true)}>Avaa</button>
       </>
       }
-      {isLongPressed && !isSubmitting && (
+      {isOpen && !isSubmitting && (
         <div className={styles.actions}>
           {confirmSkip ? (
             <div className={styles.confirmation}>
               {localAmmountSkipped > allowedSkips - 1 ? (
                 <>
                 <p>Olet käyttänyt kaikki skippisi...</p>
-                <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
+                <button onClick={() => { setConfirmSkip(false); setOpen(false); }} className={styles.backButton}>Takaisin</button>
                 </>
               ):(
                 <>
                 <p>Oletko varma että haluat skipata tämän haasteen?</p>
                 <p>Sinulla on {allowedSkips - ammountSkipped} skippiä jäljellä</p>
                 <button onClick={confirmSkipAction} className={styles.skipButton}>Kyllä</button>
-                <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
+                <button onClick={() => { setConfirmSkip(false); setOpen(false); }} className={styles.backButton}>Takaisin</button>
                 </>
               )}
             </div>

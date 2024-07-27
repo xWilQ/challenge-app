@@ -6,11 +6,10 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    
     "redirects": [ {
     "source": "/peli",
     "destination": "/peli.html",
     "type": 301
-  } ]
+    }]
   }
 }

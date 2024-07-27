@@ -26,10 +26,6 @@ export default function Omahaaste() {
 
     return (
         <div className={styles.container}>
-            
-            {/*<div className={styles.logo}>
-                <h1>Luo oma haaste <br></br> Villa Kämppä <br></br> viikonlopulle!</h1>
-            </div> */}
 
             {!submitted ? (
             <div className={styles.form}>
@@ -64,10 +60,10 @@ export default function Omahaaste() {
                 </form>
             </div>
             ):(
-            <>
-                <h2 className={styles.logo}>Kiitos haasteen luomisesta!</h2>
+            <div className={styles.afterSubmit}>
+                <h2>Kiitos haasteen luomisesta!</h2>
                 <button onClick={() => setSubmitted(false)} className={styles.button}>Luo uusi haaste</button>
-            </>
+            </div>
             )}
         </div>
     );
