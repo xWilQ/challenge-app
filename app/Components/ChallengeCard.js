@@ -3,7 +3,7 @@ import styles from './challengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, allowedSkips}) => {
+const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped}) => {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -11,17 +11,13 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   const [comment, setComment] = useState('');
   const [timer, setTimer] = useState(null);
   const [localAmmountSkipped, setLocalAmmountSkipped] = useState(0);
-  const [localAllowedSkips, setAllowedSkips] = useState(0);
+  const allowedSkips = 3;
 
   //const borderStyles = ['4px solid orange', '4px solid yellow', '4px solid blue'];
 
   useEffect(() => {
     setLocalAmmountSkipped(ammountSkipped);
   }, [ammountSkipped]);
-
-  useEffect(() => {
-    setAllowedSkips(allowedSkips);
-  }, [allowedSkips]);
 
   useEffect(() => {
     return () => clearTimeout(timer); // Clean up the timer on component unmount
@@ -125,15 +121,15 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
         <div className={styles.actions}>
           {confirmSkip ? (
             <div className={styles.confirmation}>
-              {localAmmountSkipped > localAllowedSkips - 1 ? (
+              {localAmmountSkipped > allowedSkips - 1 ? (
                 <>
-                <p>Olet käyttänyt kaikki skippisi, suorita haasteita ansaitaksesi uuden skipin</p>
+                <p>Olet käyttänyt kaikki skippisi...</p>
                 <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
                 </>
               ):(
                 <>
                 <p>Oletko varma että haluat skipata tämän haasteen?</p>
-                <p>Sinulla on {localAllowedSkips - ammountSkipped} skippiä jäljellä</p>
+                <p>Sinulla on {allowedSkips - ammountSkipped} skippiä jäljellä</p>
                 <button onClick={confirmSkipAction} className={styles.skipButton}>Kyllä</button>
                 <button onClick={() => { setConfirmSkip(false); setIsLongPressed(false); }} className={styles.backButton}>Takaisin</button>
                 </>
