@@ -3,7 +3,7 @@ import styles from './challengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped}) => {
+const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, username}) => {
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [confirmSkip, setConfirmSkip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,15 +67,17 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   };
 
   const handleSubmitComment = async () => {
-    let photoURL = '';
-
+    //let photoURL = '';
+    let photoStatus = false;
     if (photo) {
-      const photoRef = ref(storage, `photos/${photo.name}`);
+      const photoRef = ref(storage, `photos/${username}/${photo.name}`);
       const snapshot = await uploadBytes(photoRef, photo);
-      photoURL = await getDownloadURL(snapshot.ref);
+      
+      photoStatus = true;
+      //photoURL = await getDownloadURL(snapshot.ref);
     }
 
-    onSubmit(challenge, comment, photoURL);
+    onSubmit(challenge, comment, photoStatus);
     setIsSubmitting(false);
     setIsLongPressed(false);
     setComment('');
@@ -114,7 +116,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
       <p className={styles.cardDescription}>{challenge.description}</p>
       {!isLongPressed && !isSubmitting && !challenge.status &&
       <>
-       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>Avaa🎯</button>
+       <button className={styles.chooseButton} onClick={() => setIsLongPressed(true)}>Avaa</button>
       </>
       }
       {isLongPressed && !isSubmitting && (

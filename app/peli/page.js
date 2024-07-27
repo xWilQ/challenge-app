@@ -120,44 +120,7 @@ export default function Home() {
     }
   };
     
-  
-  /*const handleSubmit = async (challenge, comment, photoURL) => {
-
-    try {
-    
-      // Reference to the user's document
-      const userDocRef = doc(db, 'users', name);
-    
-      // Fetch the current user's data
-      const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.data();
-
-      // Update the user's document with the completed challenge status
-      await updateDoc(userDocRef, {
-        challenges: userData.challenges.map(c =>
-        c.id === challenge.id
-          ? { ...c, status: 'completed', completedAt: new Date(), comment: comment, photoURL } // Mark challenge as completed
-          : c
-      ),
-        ammountCompleted: ammountCompleted +1, // Increment the completed challenges counter
-      });
-
-      // Update ammountCompleted localy
-      setAmmountCompleted(ammountCompleted + 1);
-
-      // Update the local state to reflect that the challenge has been completed
-      setChallenges(prevChallenges =>
-        prevChallenges.map(c =>
-          c.id === challenge.id
-            ? { ...c, status: 'completed' } // Mark challenge as completed
-            : c
-        )
-      );
-    } catch (error) {
-      console.error('Error updating challenge completion:', error);
-    }
-  };*/
-  const handleSubmit = async (challenge, comment, photoURL) => {
+  const handleSubmit = async (challenge, comment, photoStatus) => {
     try {
       const userDocRef = doc(db, 'users', name);
       const userDoc = await getDoc(userDocRef);
@@ -166,7 +129,7 @@ export default function Home() {
       // Update the user's document with the completed challenge status
       const updatedChallenges = userData.challenges.map(c =>
         c.id === challenge.id
-          ? { ...c, status: 'completed', completedAt: new Date(), comment: comment, photoURL } // Mark challenge as completed
+          ? { ...c, status: 'completed', completedAt: new Date(), comment: comment, photoStatus } // Mark challenge as completed
           : c
       );
   
@@ -194,7 +157,16 @@ export default function Home() {
       console.error('Error updating challenge completion:', error);
     }
   };
+
+  const sortedChallenges = challenges.sort((a, b) => {
+    // Define the order of statuses and assign 'pending' as the default status for challenges without a status
+    const statusOrder = { 'pending': 1, 'skipped': 2, 'completed': 3 };
+    const statusA = a.status || 'pending';
+    const statusB = b.status || 'pending';
     
+    return statusOrder[statusA] - statusOrder[statusB];
+  });
+
   return (
     <div className={styles.container}>
       {!showChallenges ? (
@@ -224,7 +196,7 @@ export default function Home() {
           {loading ? (
             <p className={styles.loading}>Ladataan haasteita...</p>
           ) : challenges.length > 0 ? (
-            challenges.map((challenge, index) => (
+            sortedChallenges.map((challenge, index) => (
               <ChallengeCard
                 key={index}
                 challenge={challenge}
@@ -232,6 +204,7 @@ export default function Home() {
                 onSubmit={handleSubmit}
                 backgroundColor={cardColors[index % cardColors.length]}
                 ammountSkipped={ammountSkipped}
+                username={name}
               />
             ))
           ) : (
