@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './challengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes } from 'firebase/storage';
+import { collection } from 'firebase/firestore';
 
 const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSkipped, username, cardOpen}) => {
   const [isOpen, setOpen] = useState(false);
@@ -10,6 +11,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   const [photo, setPhoto] = useState(null);
   const [comment, setComment] = useState('');
   const [localAmmountSkipped, setLocalAmmountSkipped] = useState(0);
+  const [isLongDescrition, setIsLongDescrition] = useState(false);
   const allowedSkips = 3;
 
   //const borderStyles = ['4px solid orange', '4px solid yellow', '4px solid blue'];
@@ -76,13 +78,26 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
   //const cardBackgroundStyle = challenge.status ? {} : { backgroundColor, border: randomBorderStyle };
   const cardBackgroundStyle = challenge.status ? {} : { backgroundColor};
 
+  //Check if the description is longer than 100 characters
+  
+  useEffect(() => {
+    if (challenge.description.slice(0, 100) !== challenge.description) {
+      setIsLongDescrition(true);
+    }
+  }, [challenge.description]);
+
   return (
     <div
     className={`${styles.card} ${cardStyle}`}
       style={cardBackgroundStyle}
     >
       <h2 className={styles.cardTitle}>{challenge.name}</h2>
-      <p className={styles.cardDescription}>{challenge.description}</p>
+      <h2 className={styles.cardStatus}>{challenge.status}</h2>
+      {isLongDescrition && !isOpen ? (
+          <p className={styles.cardDescription}>{challenge.description.slice(0 , 100)}...</p>
+        ):(
+          <p className={styles.cardDescription}>{challenge.description}</p>
+        )}
       {!isOpen && !isSubmitting && !challenge.status &&
       <>
        <button className={styles.chooseButton} onClick={() => setOpen(true)}>Avaa</button>
@@ -94,7 +109,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
             <div className={styles.confirmation}>
               {localAmmountSkipped > allowedSkips - 1 ? (
                 <>
-                <p>Olet käyttänyt kaikki skippisi...</p>
+                <p>Olet käyttänyt kaikki skippisi</p>
                 <button onClick={() => { setConfirmSkip(false); setOpen(false); }} className={styles.backButton}>Takaisin</button>
                 </>
               ):(

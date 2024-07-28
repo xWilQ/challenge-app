@@ -14,7 +14,8 @@ export default function Home() {
   const [ammountCompleted, setAmmountCompleted] = useState(0);
 
   //const cardColors = ['#9b5de5', '#f15bb5', '#0d3b66'];
-  const cardColors = ['#218380', '#8f2d56', '#ffbc42'];
+  //const cardColors = ['#390099', '#9E0059', '#FF0054', '#FF5400', '#FFBD00'];
+  const cardColors = ['#E30401', '#47B3FD', '#FF0054', '#FF5400', '#FFBD00'];
   //const cardColors = ['#808080'];
   
 
@@ -171,11 +172,9 @@ export default function Home() {
   });
 
   return (
-    
     <div className={styles.container}>
       {!showChallenges ? (
         <div className={styles.form}>
-          <h1 className={styles.logo}>Tervetuloa VillaKämppä Haaste kisaan!</h1>
           <form onSubmit={handleNameSubmit}>
             <input
               type="text"
@@ -192,7 +191,7 @@ export default function Home() {
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          <h1 className={styles.logo}>Tervetuloa {name.charAt(0).toUpperCase() + name.slice(1)}!</h1>
+          <h1 className={styles.welcome}>Tervetuloa {name.charAt(0).toUpperCase() + name.slice(1)}!</h1>
             <div className={styles.stats}>
               <p> {ammountCompleted} haastetta suoritettu</p>
               <p> {ammountSkipped} haastetta skipattu</p>
