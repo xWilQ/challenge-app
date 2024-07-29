@@ -4,6 +4,7 @@ import { db } from '../../firebaseConfig';
 import styles from './page.module.css';
 import { collection, doc , getDocs, addDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import ChallengeCard from '../components/challengeCard';
+import logo from '../images/Villa_Kamppa_transparent2.png';
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -18,6 +19,11 @@ export default function Home() {
   const cardColors = ['#E30401', '#47B3FD', '#FF0054', '#FF5400', '#FFBD00'];
   //const cardColors = ['#808080'];
   
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   useEffect(() => {
     // Retrieve the name from local storage when the component mounts
@@ -34,7 +40,7 @@ export default function Home() {
     }
   }, [showChallenges]);
 
-  const handleNameSubmit = (e) => {
+  const handleNameSubmit = async (e) => {
     
     e.preventDefault();
     
@@ -42,20 +48,47 @@ export default function Home() {
       return;
     }
 
-    const prettyName = name.replace(/\s/g, "").trim().toLowerCase();
+    const processedName = name.replace(/\s/g, "").trim().toLowerCase();
     
-    setName(prettyName);
+    setName(processedName);
     // Store the name in local storage
-    localStorage.setItem('userName', prettyName);
+    localStorage.setItem('userName', processedName);
+    // Create a new user document if it does not exist
+    const userDocRef = doc(db, 'users', processedName);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        challenges: [],
+        ammountSkipped: 0,
+        ammountCompleted: 0,
+      });
+      console.log('User document created:', processedName);
+    }
     setShowChallenges(true);
   };
 
   const fetchChallenges = async () => {
+    console.log('Fetching challenges...');
     setLoading(true);
     try {
       const userDocRef = doc(db, 'users', name);
       const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.exists() ? userDoc.data() : { challenges: [], ammountCompleted: 0, ammountSkipped: 0 };
+      let userData = null;
+
+      if (userDoc.exists()) {
+        console.log('User exists:', name);
+        userData = userDoc.data();
+        setAmmountSkipped(userData.ammountSkipped || 0);
+        setAmmountCompleted(userData.ammountCompleted || 0);
+        setChallenges(userData.challenges || []);
+      } else {
+        // User does not exist, show form for entering new name
+        console.log('User does not exist:', name);
+        setName('');
+        setLoading(false);
+        setShowChallenges(false);
+        return; // Exit the function early
+      }
 
       // Set state for skipped and completed challenges
       setAmmountSkipped(userData.ammountSkipped || 0);
@@ -191,8 +224,8 @@ export default function Home() {
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          <h1 className={styles.welcome}>Tervetuloa {name.charAt(0).toUpperCase() + name.slice(1)}!</h1>
             <div className={styles.stats}>
+            <h1 className={styles.welcome}>Tervetuloa {name.charAt(0).toUpperCase() + name.slice(1)}!</h1>
               <p> {ammountCompleted} haastetta suoritettu</p>
               <p> {ammountSkipped} haastetta skipattu</p>
             </div>

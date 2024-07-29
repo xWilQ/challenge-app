@@ -91,7 +91,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
     className={`${styles.card} ${cardStyle}`}
       style={cardBackgroundStyle}
     >
-      <h2 className={styles.cardTitle}>{challenge.name}</h2>
+      <h2 className={styles.cardTitle}>{challenge.title}</h2>
       <h2 className={styles.cardStatus}>{challenge.status}</h2>
       {isLongDescrition && !isOpen ? (
           <p className={styles.cardDescription}>{challenge.description.slice(0 , 100)}...</p>
@@ -143,6 +143,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
             accept="image/*"
             onChange={handlePhotoChange}
             className={styles.photoInput}
+            placeholder='Lisää kuva'
           />
           <div className={styles.commentActions}>
             <button onClick={handleCancel} className={styles.backButton}>Takaisin</button>
