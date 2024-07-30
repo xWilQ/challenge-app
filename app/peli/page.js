@@ -4,7 +4,6 @@ import { db } from '../../firebaseConfig';
 import styles from './page.module.css';
 import { collection, doc , getDocs, addDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import ChallengeCard from '../components/challengeCard';
-import logo from '../images/Villa_Kamppa_transparent2.png';
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -18,27 +17,21 @@ export default function Home() {
   //const cardColors = ['#390099', '#9E0059', '#FF0054', '#FF5400', '#FFBD00'];
   const cardColors = ['#E30401', '#47B3FD', '#FF0054', '#FF5400', '#FFBD00'];
   //const cardColors = ['#808080'];
-  
-  const [isClient, setIsClient] = useState(false)
- 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   useEffect(() => {
     // Retrieve the name from local storage when the component mounts
     const storedName = localStorage.getItem('userName');
     if (storedName) {
       setName(storedName);
-      setShowChallenges(true);
+      fetchChallenges(storedName);
     }
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (showChallenges) {
       fetchChallenges();
     }
-  }, [showChallenges]);
+  }, [showChallenges]);*/
 
   const handleNameSubmit = async (e) => {
     
@@ -64,17 +57,20 @@ export default function Home() {
       });
       console.log('User document created:', processedName);
     }
-    setShowChallenges(true);
+    //setShowChallenges(true);
+    fetchChallenges(processedName);
   };
 
-  const fetchChallenges = async () => {
+  const fetchChallenges = async (name) => {
     console.log('Fetching challenges...');
     setLoading(true);
     try {
       const userDocRef = doc(db, 'users', name);
       const userDoc = await getDoc(userDocRef);
       let userData = null;
-
+      
+      console.log('trying to fetch user data', name);
+      
       if (userDoc.exists()) {
         console.log('User exists:', name);
         userData = userDoc.data();
@@ -97,7 +93,11 @@ export default function Home() {
       // If the user has challenges saved, use them; otherwise, fetch new challenges
       if (userData.challenges.length > 0) {
         setChallenges(userData.challenges);
+        console.log('Challenges fetched from user data');
       } else {
+        
+        console.log('User had no challenges, fetching new ones');
+
         const challengesCollection = collection(db, 'challenges');
         const challengesSnapshot = await getDocs(challengesCollection);
         const allChallenges = challengesSnapshot.docs.map(doc => doc.data());
@@ -111,9 +111,11 @@ export default function Home() {
           challenges: shuffledChallenges,
         });
       }
+      setShowChallenges(true);
     } catch (error) {
       console.error('Error fetching challenges:', error);
     } finally {
+      console.log('done fetcing challenges');
       setLoading(false);
     }
   };
@@ -131,7 +133,7 @@ export default function Home() {
       const updatedChallenges = userData.challenges.map(c =>
         c.id === challenge.id ? { ...c, status: 'skipped' } : c
       );
-  
+      
       // Fetch a new random challenge that is not already in the user's list
       const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
         .map(doc => ({ ...doc.data(), id: doc.id }))
@@ -169,24 +171,28 @@ export default function Home() {
           ? { ...c, status: 'completed', completedAt: new Date(), comment: comment, photoStatus } // Mark challenge as completed
           : c
       );
-  
-      // Fetch a new random challenge that is not already in the user's list
-      const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
-        .map(doc => ({ ...doc.data(), id: doc.id }))
-        .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
-        .sort(() => Math.random() - 0.5)[0];
-  
-      // Add the new challenge to the user's list
-      updatedChallenges.push(newChallenge);
-  
+      
+      // Update ammountCompleted locally
+      setAmmountCompleted(ammountCompleted + 1);
+
+      // Limit the number of challenges that can be completed to 15
+      if (ammountCompleted < 10) {
+        
+        // Fetch a new random challenge that is not already in the user's list
+        const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
+          .map(doc => ({ ...doc.data(), id: doc.id }))
+          .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
+          .sort(() => Math.random() - 0.5)[0];
+          
+          // Add the new challenge to the user's list
+          updatedChallenges.push(newChallenge);
+      }
+      
       // Update the user's document with the new challenge list and increment the completed count
       await updateDoc(userDocRef, {
         challenges: updatedChallenges,
         ammountCompleted: ammountCompleted + 1,
       });
-  
-      // Update ammountCompleted locally
-      setAmmountCompleted(ammountCompleted + 1);
   
       // Update the local state to reflect the completed challenge and the new challenge
       setChallenges(updatedChallenges);
