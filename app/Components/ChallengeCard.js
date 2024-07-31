@@ -83,7 +83,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
     if (challenge.description.slice(0, 100) !== challenge.description) {
       setIsLongDescrition(true);
     }
-    if (challenge.status === 'completed' || challenge.status === 'skipped') {
+    else if (challenge.status === 'completed' || challenge.status === 'skipped') {
       setIsLongDescrition(false);
     }
   }, [challenge.description, challenge.status]);

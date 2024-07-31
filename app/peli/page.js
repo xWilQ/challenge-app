@@ -149,9 +149,14 @@ export default function Home() {
         .map(doc => ({ ...doc.data(), id: doc.id }))
         .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
         .sort(() => Math.random() - 0.5)[0];
-  
-      // Add the new challenge to the user's list
-      updatedChallenges.push(newChallenge);
+      
+      console.log('newChallenge', newChallenge);
+
+      //IF there is a new challgenge then add it to the list, otherwise do nothing.
+      if (newChallenge) {
+        // Add the new challenge to the user's list
+        updatedChallenges.push(newChallenge);
+      }
   
       // Update the user's document with the new challenge list and increment the skipped count
       await updateDoc(userDocRef, {
@@ -186,28 +191,22 @@ export default function Home() {
       setAmmountCompleted(ammountCompleted + 1);
 
       // Limit the number of challenges that can be completed to 15
-      /*if (ammountCompleted < 10) {
+      if (ammountCompleted < 10) {
         
         // Fetch a new random challenge that is not already in the user's list
         const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
           .map(doc => ({ ...doc.data(), id: doc.id }))
           .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
           .sort(() => Math.random() - 0.5)[0];
-          
-          // Add the new challenge to the user's list
-          updatedChallenges.push(newChallenge);
-      }*/
-      
-      // Fetch a new random challenge that is not already in the user's list
-      const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
-      .map(doc => ({ ...doc.data(), id: doc.id }))
-      .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
-      .sort(() => Math.random() - 0.5)[0];
-      
-      console.log(newChallenge);
 
-      // Add the new challenge to the user's list
-      updatedChallenges.push(newChallenge);
+
+        console.log('newChallenge', newChallenge);
+        //IF there is a new challgenge then add it to the list, otherwise do nothing.
+        if (newChallenge) {
+        // Add the new challenge to the user's list
+        updatedChallenges.push(newChallenge);
+      }
+      }
 
       // Update the user's document with the new challenge list and increment the completed count
       await updateDoc(userDocRef, {
