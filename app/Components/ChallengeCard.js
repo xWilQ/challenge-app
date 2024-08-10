@@ -80,10 +80,10 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
 
   //Check if the description is longer than 100 characters
   useEffect(() => {
-    if (challenge.description.slice(0, 100) !== challenge.description) {
+    if (challenge.description.slice(0, 50) !== challenge.description) {
       setIsLongDescrition(true);
     }
-    else if (challenge.status === 'completed' || challenge.status === 'skipped') {
+    if (challenge.status === 'completed' || challenge.status === 'skipped') {
       setIsLongDescrition(false);
     }
   }, [challenge.description, challenge.status]);
@@ -97,7 +97,7 @@ const ChallengeCard = ({ challenge, onSkip, onSubmit, backgroundColor, ammountSk
       <h2 className={styles.cardStatus}>{challenge.status}</h2>
 
       {isLongDescrition && !isOpen ? (
-          <p className={styles.cardDescription}>{challenge.description.slice(0 , 100)}...</p>
+          <p className={styles.cardDescription}>{challenge.description.slice(0,50)}...</p>
         ):(
           <p className={styles.cardDescription}>{challenge.description}</p>
       )}

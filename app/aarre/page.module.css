@@ -1,0 +1,11 @@
+
+  .container {
+    text-align: center;
+    background-color: #010535;
+    background-image: url(../images/aarre2.jpeg);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100vh;
+  }

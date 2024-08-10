@@ -7,8 +7,8 @@
       "**/node_modules/**"
     ],
     "redirects": [ {
-    "source": "/peli",
-    "destination": "/peli.html",
+    "source": "/aarre",
+    "destination": "/aarre.html",
     "type": 301
     }]
   }
