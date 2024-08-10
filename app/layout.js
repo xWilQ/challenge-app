@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Villa Kämppä 2024",
+  title: "Haaste",
   description: "",
 };
 
