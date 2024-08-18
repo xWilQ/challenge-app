@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './main.module.css';
 import { db } from '../../firebaseConfig';
 import { collection, doc , getDoc, getDocs, addDoc, setDoc, updateDoc, query, where } from 'firebase/firestore';
-import { Asul } from 'next/font/google';
 
 const CreateGame = ({ onBack, onJoinGame }) => {
 

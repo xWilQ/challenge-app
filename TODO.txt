@@ -1,25 +1,4 @@
 TODO:
-- Make it "endless", users should get a new challenge on skip and on a completed challenge?
-- Decide if players should be rewarded with additional skips after completing a number of challenges.
-- Fix colors.
 
-- FIXING UNIQUENESS THING BY HAVING MULTIPLES OF SAME QUESTION IN THE DATABASE
- + AutoID by firebase, same name on challenge so check that before adding to player.
-
-
-KOODI MIETTEITÄ
-
-use UNIQUENESS
-
-but not running ID but AutoID instead.
-
-User grabs all challenges picks out 5 and adds those to the users database and locally, 
-then lowers the UNIQUENESS value on those 5 challenges. 
-
-When a user skips or completes a challenge one new challenge should be added but to get a random one,
-again need to get all the challenges and just pick one by random check it's UNIQUENESS value make sure it's > 0.
-add it to the user locally and users database, and then write and lower it's UNIQUENESS value by 1.
-
-A player can complete a maximum of 15 challenges. 
-
-DONT POST ANY CODE YET! Is this hard to implement, does it sound good? what would you change? Are there possibilities for collisions. And Calculate how many challenges will i need, if all of them have a UNIQUENESS of 3
+When creating game, add or have the user add a password or passcode so they can come back and edit the game.
+Firebase authentication? YAY or NAY?
