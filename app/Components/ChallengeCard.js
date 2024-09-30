@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './challengeCard.module.css';
+import styles from './ChallengeCard.module.css';
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes } from 'firebase/storage';
 import { collection } from 'firebase/firestore';

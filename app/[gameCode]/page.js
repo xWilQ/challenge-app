@@ -1,9 +1,11 @@
 import { db } from '../../firebaseConfig';
 import { collection, doc , getDoc, getDocs, addDoc, setDoc, updateDoc, query, where } from 'firebase/firestore';
 import styles from './page.module.css';
+import Link from 'next/link'
+import MainScene from '../components/MainScene';
 
 // Function to fetch all possible game codes
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
     const gamesCollection = collection(db, "games");
     const gameSnapshots = await getDocs(gamesCollection);
 
@@ -12,50 +14,33 @@ export async function generateStaticParams() {
     }));
 
     return paths;
-}
+}*/
 
 export default async function GamePage({ params }) {
     const { gameCode } = params;
-    const gameData = await getGameData(gameCode.toUpperCase()); // Fetch and render the game data
+    const gameData = await getGameData(gameCode.toUpperCase()); // Check if there is a game with the given game code and get the game data.
 
+    //Check if the game exists
     if (!gameData) {
         return (
-            <div>
-                <h1>Game Not Found</h1>
+            <div className={styles.container}>
+                <div className={styles.background}>
+                    <h1>NO GAME FOUND</h1>
+                    <Link href='/'>
+                        <button className={styles.button}>BACK</button>
+                    </Link>
+                </div>
             </div>
         );
     }
 
-    const submitUserName = (e) => {
-        e.preventDefault();
-
-        const username = e.target.value.toUpperCase();
-
-        // Save username to local storage
-        localStorage.setItem('username', username);
-
-        console.log('Joiging game as ', username);
-    }
-
+    // If the game exists
     return (
-        <div>
-            <form>
-                <h1 className={styles.title}>{gameData.gameName}</h1>
-                <p className={styles.gameDescription}>{gameData.gameDescription}</p>
-                <div className={styles.subtitle2}>
-                    <p>ENTER USERNAME</p>
-                </div>
-                <input
-                    type="text"
-                    /*value={e.target.value}*/
-                    /*onChange={(e) => onNameChange(e)}*/
-                    placeholder="USERNAME"
-                    maxLength='12'
-                    required
-                    className={styles.input}
-                />
-                <button type="submit" className={styles.button}>JOIN GAME</button>
-            </form>
+        <div className={styles.container}>
+            <MainScene 
+                gameData={gameData}
+                gameCode={gameCode.toUpperCase()}
+            />
         </div>
     );
 }

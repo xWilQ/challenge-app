@@ -99,7 +99,7 @@ const CreateGame = ({ onBack, onJoinGame }) => {
         <div className={styles.background}>
             <h1 className={styles.title}>Create Game</h1>
             <h1 className={styles.subtitle}>GAMECODE: {gameCode}</h1>
-            <form className={styles.form} onSubmit={CreateGame}>
+            <form onSubmit={CreateGame}>
                 <input
                     type="text"
                     value={gameName}

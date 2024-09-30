@@ -1,0 +1,85 @@
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /*align-items: center;*/  
+    text-align: center;
+    
+    background-color: #010535;
+    background-image: url(.././images/partybg.jpg);
+    background-size: cover;
+    /*background-position: center;*/
+    background-repeat: repeat;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .cardsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    user-select: none;
+    background-color: aqua;
+    /*background-image: url(.././images/partybg.jpg);*/
+  }
+
+  .container h1{
+    font-family: "Bungee", sans-serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 2px black;
+    overflow-wrap: break-word;
+  }
+  
+  .container p {
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 1px 1px 2px black;
+  }
+  
+  .form {
+    /*margin: auto;*/
+    max-width: 400px;
+    width: 300px;
+  }
+
+  .input {
+    width: 100%;
+    padding: 10px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+  }
+
+  .stats {
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    background-color: #010535;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .welcome {
+    text-align: center;
+    font-family: "Bungee", sans-serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 2px black;
+    overflow-wrap: break-word;
+  }
+
+  .button {
+    padding: 10px 20px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+  }
+
+  .loading, .noChallenges {
+    font-size: 16px;
+    margin-top: 20px;
+  }

@@ -1,9 +1,10 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import styles from './main.module.css';
 import { db } from '../../firebaseConfig';
 import { collection, doc , getDoc, getDocs, addDoc, setDoc, updateDoc, query, where } from 'firebase/firestore';
 
-const StartScreen = ({ onCreateGame, onJoinGame }) => {
+const StartScreen = ({ onCreateGame, onJoinGame, _gameFound, _gameCode, _gameData, _username}) => {
 
     const [username, setUsername] = useState('');
     const [gameCode, setGameCode] = useState('');
@@ -18,9 +19,17 @@ const StartScreen = ({ onCreateGame, onJoinGame }) => {
     useEffect(() => {
         if (gameJoined) {
             console.log(`${username} joined game #${gameCode}`);
-            onJoinGame();
+            _username = username;
+            onJoinGame(username);
         }
     }, [gameJoined]);
+
+    useEffect(() => {
+        console.log('Parent component game found:', _gameFound);
+        setGameFound(_gameFound);
+        setGameData(_gameData);
+        setGameCode(_gameCode);
+    },[]);
 
     const submitGameCode = (e) => {
         e.preventDefault();
@@ -182,6 +191,7 @@ const StartScreen = ({ onCreateGame, onJoinGame }) => {
                 <h1 style={{ padding: '20px'}}>OR</h1>
                 <div className={styles.containerRight}>
                     <button onClick={onCreateGame} className={styles.button}>CREATE A GAME</button>
+                    <button className={styles.button}>ADMIN LOGIN</button>
                 </div>
                 </>
             }

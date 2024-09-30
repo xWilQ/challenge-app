@@ -2,3 +2,23 @@ TODO:
 
 When creating game, add or have the user add a password or passcode so they can come back and edit the game.
 Firebase authentication? YAY or NAY?
+
+
+TEMP CODE PASTE CRAP:
+<form className={styles.form}>
+                <h1 className={styles.title}>{gameData.gameName}</h1>
+                <p className={styles.gameDescription}>{gameData.gameDescription}</p>
+                <div className={styles.subtitle2}>
+                    <p>ENTER USERNAME</p>
+                </div>
+                <input
+                    type="text"
+                    /*value={e.target.value}*/
+                    /*onChange={(e) => onNameChange(e)}*/
+                    placeholder="USERNAME"
+                    maxLength='12'
+                    required
+                    className={styles.input}
+                />
+                <button type="submit" className={styles.button}>JOIN GAME</button>
+            </form>
