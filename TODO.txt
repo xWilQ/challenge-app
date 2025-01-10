@@ -21,5 +21,3 @@ again need to get all the challenges and just pick one by random check it's UNIQ
 add it to the user locally and users database, and then write and lower it's UNIQUENESS value by 1.
 
 A player can complete a maximum of 15 challenges. 
-
-DONT POST ANY CODE YET! Is this hard to implement, does it sound good? what would you change? Are there possibilities for collisions. And Calculate how many challenges will i need, if all of them have a UNIQUENESS of 3

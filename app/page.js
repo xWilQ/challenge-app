@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';
 import styles from './page.module.css';
 import { collection, doc , getDocs, addDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import ChallengeCard from './components/ChallengeCard';
+import ChallengeCard from './Components/ChallengeCard';
 
 export default function Home() {
   const [name, setName] = useState('');
