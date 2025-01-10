@@ -8,6 +8,7 @@ How it works:
 - An easy-to-use interface with support for skipping and submitting challenges.
 
 **Currently working on version 2**
+
 Planned Features for Version 2
 Version 2 will introduce an admin dashboard, giving game creators full control over their challenge games. This dashboard will allow creators to:
 - Configure settings and rules for each game.
