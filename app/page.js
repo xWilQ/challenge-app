@@ -13,10 +13,6 @@ export default function Home() {
   const [ammountSkipped, setAmmountSkipped] = useState(0);
   const [ammountCompleted, setAmmountCompleted] = useState(0);
 
-  //const cardColors = ['#9b5de5', '#f15bb5', '#0d3b66'];
-  //const cardColors = ['#390099', '#9E0059', '#FF0054', '#FF5400', '#FFBD00'];
-  //const cardColors = ['#E30401', '#47B3FD', '#FF0054', '#FF5400', '#FFBD00'];
-  //const cardColors = ['#47B3FD'];
   const cardColors = ['#4cc9f0', '#4361ee', '#3a0ca3', '#7209b7', '#AD18B5'];
 
   useEffect(() => {
@@ -27,12 +23,6 @@ export default function Home() {
       fetchChallenges(storedName);
     }
   }, []);
-
-  /*useEffect(() => {
-    if (showChallenges) {
-      fetchChallenges();
-    }
-  }, [showChallenges]);*/
 
   const handleNameSubmit = async (e) => {
     
@@ -58,7 +48,6 @@ export default function Home() {
       });
       console.log('User document created:', processedName);
     }
-    //setShowChallenges(true);
     fetchChallenges(processedName);
   };
 
@@ -205,17 +194,6 @@ export default function Home() {
 
         updatedChallenges.push(bonusChallenge);
       }
-      
-      // Fetch a new random challenge that is not already in the user's list
-      /*const newChallenge = (await getDocs(collection(db, 'challenges'))).docs
-      .map(doc => ({ ...doc.data(), id: doc.id }))
-      .filter(c => !updatedChallenges.some(rc => rc.id === c.id))
-      .sort(() => Math.random() - 0.5)[0];
-      
-      console.log(newChallenge);
-
-      // Add the new challenge to the user's list
-      updatedChallenges.push(newChallenge);*/
 
       // Update the user's document with the new challenge list and increment the completed count
       await updateDoc(userDocRef, {
